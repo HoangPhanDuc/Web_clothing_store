@@ -1,0 +1,10 @@
+.container__login{
+  min-width: 352px;
+  height: auto;
+}
+.forgot-pass a {
+  color: grey;
+}
+.forgot-pass a:hover {
+  color: black;
+}

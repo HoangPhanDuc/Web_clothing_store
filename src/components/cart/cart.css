@@ -1,0 +1,19 @@
+.contain__cart {
+  min-height: 535px;
+}
+.img__cart img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  background-size: cover;
+}
+.button__cart input {
+  width: 50px;
+}
+.button__cart input::-webkit-outer-spin-button,
+.button__cart input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.remove__product i {
+  cursor: pointer;
+}

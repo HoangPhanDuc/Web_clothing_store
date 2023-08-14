@@ -1,0 +1,10 @@
+.footer li a {
+  color: black;
+  text-decoration: none;
+}
+.footer li {
+  margin: 10px;
+}
+.footer li a:hover {
+  opacity: 0.6;
+}
