@@ -50,7 +50,7 @@ const Login = () => {
             </div>
           </div>
           <div className="me-3 m-1 d-flex justify-content-end forgot-pass">
-            <a className="text-decoration-none" href="...">
+            <a className="text-decoration-none" href="..">
               Forgot password?
             </a>
           </div>

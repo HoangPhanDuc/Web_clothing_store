@@ -12,7 +12,6 @@
   left: 0;
   right: 0;
   width: 100%;
-  transition: 0.3 ease-in-out;
 }
 .drop__down a {
   text-decoration: none;

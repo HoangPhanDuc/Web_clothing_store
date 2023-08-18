@@ -5,6 +5,7 @@
   border-radius: 50%;
   object-fit: cover;
 }
+/* all */
 .box-input input {
   border: none;
   outline: none;
@@ -12,11 +13,8 @@
   background: transparent;
   height: 24px;
 }
-.box-input input:focus{
+.box-input input:focus {
   border-bottom: 1px solid black;
-}
-.box-login label {
-  color: black;
 }
 .btn__opacity button:hover {
   opacity: 0.65;
