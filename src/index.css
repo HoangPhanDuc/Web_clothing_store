@@ -7,8 +7,6 @@
 }
 /* all */
 .box-input input {
-  border: none;
-  outline: none;
   border-bottom: 1px solid grey;
   background: transparent;
   height: 24px;
@@ -18,4 +16,16 @@
 }
 .btn__opacity button:hover {
   opacity: 0.65;
+}
+/* .container__login {
+  min-width: 352px;
+  height: auto;
+} */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
 }

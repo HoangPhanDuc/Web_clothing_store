@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { currencyUSD } from "../../config/product.config";
-import image from "../../images/ao-so-mi-den-tron-774x1024.jpg";
-import "./cart.css";
+import { React, useState } from "react";
+import { currencyUSD } from "../config/product.config";
+import "../assets/css/cart.css"
+import image from "../assets/images/ao-so-mi-den-tron-774x1024.jpg";
 
-const Cart = () => {
+export default function Cart() {
   const [cartNumber, setCartNumber] = useState(1);
 
   const handleChange = (e) => {
@@ -47,11 +47,9 @@ const Cart = () => {
         </div>
         <div className="col">{currencyUSD.format(1234)}</div>
         <div className="col remove__product">
-          <i className="fa-solid fa-x"></i>
+          <i class="fa-solid fa-trash"></i>
         </div>
       </div>
     </div>
   );
-};
-
-export default Cart;
+}

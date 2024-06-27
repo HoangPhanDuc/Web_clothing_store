@@ -1,8 +1,9 @@
+import React from "react";
 import { useParams } from "react-router-dom";
-import { currencyUSD } from "../../config/product.config";
-import { objProducts } from "../../config/product.data";
+import { currencyUSD } from "../config/product.config";
+import { objProducts } from "../config/product.data";
 
-const ProductDetail = () => {
+export default function ProductDetail() {
   const { id } = useParams();
   let temp = id - 1;
   const data = [objProducts[temp]];
@@ -33,6 +34,4 @@ const ProductDetail = () => {
       ))}
     </div>
   );
-};
-
-export default ProductDetail;
+}

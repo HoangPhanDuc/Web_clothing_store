@@ -1,6 +1,7 @@
-import "./footer.css"
+import React from "react";
+import "../assets/css/footer.css"
 
-const Footer = () => {
+export default function Footer() {
   return (
     <div className="container-fluid border border-1 border-black border-opacity-50 border-start-0 border-bottom-0 border-end-0">
       <div className="row row-cols-2 row-cols-sm-2 row-cols-lg-3">
@@ -45,6 +46,4 @@ const Footer = () => {
       </div>
     </div>
   );
-};
-
-export default Footer;
+}

@@ -1,4 +1,4 @@
-import tShirt from "../images/ao-so-mi-den-tron-774x1024.jpg"
+import tShirt from "../assets/images/ao-so-mi-den-tron-774x1024.jpg"
 
 export const objProducts = [
   {

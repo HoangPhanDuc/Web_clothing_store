@@ -1,16 +1,27 @@
-import { useNavigate } from "react-router-dom";
-import "./header.css";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "../assets/css/header.css";
+import { signOut } from "firebase/auth";
+import { auth } from "../config/firebase.config";
 
-const Header = () => {
+export default function Header() {
   const handleOfClick = useNavigate();
+
+  const logOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="container-fluid sticky-top">
       <nav className="navbar navbar-expand-sm navbar-light bg-white">
-        <div className="container">
-          <a className="navbar-brand nav__brand" href="http://localhost:3000/">
+        <div className="container-fluid">
+          <Link className="navbar-brand nav__brand" to="/">
             C-Shop
-          </a>
+          </Link>
           <button
             className="navbar-toggler d-lg-none"
             type="button"
@@ -234,16 +245,22 @@ const Header = () => {
                   className="dropdown-menu rounded-0 bg-white"
                   aria-labelledby="dropdownId"
                 >
-                  <a className="dropdown-item" href="http://localhost:3000/login">
+                  <a
+                    className="dropdown-item"
+                    href="http://localhost:3000/login"
+                  >
                     Login
                   </a>
-                  <a className="dropdown-item" href="http://localhost:3000/sign-up">
+                  <a
+                    className="dropdown-item"
+                    href="http://localhost:3000/sign-up"
+                  >
                     Sign up
                   </a>
                 </div>
               </li>
             </ul>
-            <form className="d-flex my-2 my-lg-0">
+            {/* <form className="d-flex my-2 my-lg-0">
               <input
                 className="me-sm-2 border border-1 border-black"
                 type="text"
@@ -255,12 +272,32 @@ const Header = () => {
               >
                 Search
               </button>
-            </form>
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </form> */}
+            {/* <i class="fa-solid fa-user"></i> */}
+            <div className="d-block align-items-center">
+              <button
+                onClick={() => handleOfClick("/login")}
+                className="border border-0 border-black bg-dark text-white rounded-1 p-1 ps-3 pe-3"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => handleOfClick("/sign-up")}
+                className="border border-0 border-black bg-dark text-white rounded-1 ms-2 p-1 ps-3 pe-3"
+              >
+                Sign up
+              </button>
+              <button
+                onClick={() => logOut()}
+                className="border border-0 border-black bg-dark text-white rounded-1 ms-2 p-1 ps-3 pe-3"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </nav>
     </div>
   );
-};
-
-export default Header;
+}
