@@ -1,50 +1,84 @@
+.navbar-brand,
 .nav__brand {
   font-family: cursive;
   cursor: pointer;
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: #222;
+  letter-spacing: 2px;
+  user-select: none;
+  transition: color 0.3s ease;
 }
-.drop__content {
-  position: relative;
-}
-.navbar .navbar-nav .drop__down {
-  background-color: white;
-  display: none;
-  position: fixed;
-  left: 0;
-  right: 0;
-  width: 100%;
-}
-.drop__down a {
+.navbar-brand:hover,
+.nav__brand:hover {
+  color: #007bff;
   text-decoration: none;
-  color: black;
-  padding: 8px 10px;
-  margin: 3px;
 }
-.drop__content:hover {
-  .drop__down {
-    display: block;
-    animation: timing-menu 0.5s;
-  }
-  .nav-link {
-    opacity: 0.5;
-  }
+
+.navbar {
+  padding-top: 0.3rem !important;
+  padding-bottom: 0.3rem !important;
 }
-.b__cart {
+
+/* Menu nav link */
+.navbar-nav .nav-link {
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #444;
+  transition: color 0.3s ease;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+}
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* Icon Cart, Order, User */
+.navbar-nav .nav-item .fa-lg {
+  color: #444;
+  transition: color 0.3s ease;
+}
+.navbar-nav .nav-item:hover .fa-lg {
+  color: #007bff;
   cursor: pointer;
 }
-@keyframes timing-menu {
-  from {
-    opacity: 0.5;
-  }
-  to {
-    opacity: 1;
-  }
+
+/* Dropdown Account menu */
+.dropdown-menu.abc {
+  right: 0 !important;
+  left: auto !important;
+  min-width: 150px;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
-.drop__down a:hover {
-  opacity: 0.5;
-  background-color: white;
+
+/* Form search */
+form[role="search"] {
+  max-width: 250px;
 }
+
+/* Input search */
+form[role="search"] input.form-control {
+  height: 32px;
+  font-size: 0.9rem;
+}
+
+/* Button search */
+form[role="search"] button.btn {
+  height: 32px;
+  font-size: 0.9rem;
+}
+
+/* Responsive fix for mobile dropdown */
 @media screen and (max-width: 576px) {
-  .navbar .navbar-nav .drop__down {
-    position: relative;
+  .dropdown-menu.abc {
+    position: static !important;
+    box-shadow: none !important;
+  }
+  form[role="search"] {
+    max-width: 100%;
+    margin-top: 0.5rem;
   }
 }

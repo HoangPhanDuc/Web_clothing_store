@@ -1,10 +1,13 @@
-.footer li a {
-  color: black;
+.footer {
+  background-color: rgb(32, 32, 32);
+  color: white;
+}
+.sub-footer li a {
   text-decoration: none;
 }
-.footer li {
+.sub-footer li {
   margin: 10px;
 }
-.footer li a:hover {
+.sub-footer li a:hover {
   opacity: 0.6;
 }

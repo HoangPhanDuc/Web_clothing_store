@@ -1,0 +1,42 @@
+.pr-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  margin: 3rem 0;
+}
+
+.pr-section.reverse {
+  flex-direction: row-reverse;
+}
+
+.pr-image {
+  width: 60vw;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.pr-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pr-image.left img {
+  clip-path: ellipse(100% 100% at 0% 50%);
+}
+
+.pr-image.right img {
+  clip-path: ellipse(100% 100% at 100% 50%);
+}
+
+.pr-content {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

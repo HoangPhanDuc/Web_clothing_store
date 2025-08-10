@@ -1,13 +1,29 @@
-.container__login {
-  min-width: 352px;
-  height: auto;
+.login-box {
+  min-width: 360px;
+  max-width: 450px;
 }
+
 .forgot-pass a {
-  color: grey;
+  color: #6c757d;
+  text-decoration: none;
 }
+
 .forgot-pass a:hover {
   color: black;
+  text-decoration: underline;
 }
-.box-login label {
-  color: black;
+
+.input-group-text {
+  cursor: pointer;
+  background-color: #fff;
+  border-left: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  padding: 0;
+}
+
+.input-group .form-control {
+  border-right: none;
 }

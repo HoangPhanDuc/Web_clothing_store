@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { auth, db, googleProvider } from "../config/firebase.config";
+import { auth, db, googleProvider } from "../../config/firebase.config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { signInWithGoogle } from "../Utils/feature.common";
 import { doc, setDoc } from "firebase/firestore";
 
 const SignUp = () => {
@@ -24,10 +23,10 @@ const SignUp = () => {
           email,
           password
         );
-        // const user = userInfo.user;
-        // await setDoc(doc(db, "roles", user.uid), {
-        //   role: role,
-        // });
+        const user = userInfo.user;
+        await setDoc(doc(db, "Roles", user.uid), {
+          role: "user",
+        });
         setMessage("Sign in successful!");
       }
     } catch (error) {
@@ -35,9 +34,9 @@ const SignUp = () => {
     }
   };
 
-  const signUpWithGoogle = () => {
-    signInWithGoogle(auth, googleProvider, setMessage);
-  };
+  // const signUpWithGoogle = () => {
+  //   signInWithGoogle(auth, googleProvider, setMessage);
+  // };
 
   return (
     <div className="container w-100 vh-100 font-monospace">
@@ -81,7 +80,7 @@ const SignUp = () => {
         </form>
         <div className="mt-2">
           <button
-            onClick={() => signUpWithGoogle()}
+            // onClick={() => signUpWithGoogle()}
             className="w-100 border-1 p-2"
           >
             Continue with Google <i class="fa-brands fa-google"></i>
@@ -94,8 +93,8 @@ const SignUp = () => {
             </button>
           </Link>
         </div>
-        <div className="text-center" style={{ fontSize: "10px" }}>
-          {message && <p>{message}</p>}
+        <div className="position-relative" style={{ fontSize: "10px" }}>
+          <span className="position-absolute">{message && <p>{message}</p>}</span>
         </div>
       </div>
     </div>

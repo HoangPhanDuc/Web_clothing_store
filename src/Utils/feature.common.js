@@ -1,10 +1,4 @@
-import { signInWithPopup } from "firebase/auth";
-
-export const signInWithGoogle = async (auth, googleProvider, setMessage) => {
-  try {
-    await signInWithPopup(auth, googleProvider);
-    setMessage("successful!");
-  } catch (error) {
-    console.error(error);
-  }
-};
+export const currencyUSD = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});

@@ -1,10 +1,17 @@
-import { React, useState } from "react";
-import { currencyUSD } from "../config/product.config";
-import "../assets/css/cart.css"
-import image from "../assets/images/ao-so-mi-den-tron-774x1024.jpg";
+import { useState } from "react";
+import { currencyUSD } from "../../utils/feature.common";
+import "../../assets/css/cart.css";
+import image from "../../assets/images/ao-so-mi-den-tron-774x1024.jpg";
+// import { useSelector } from "react-redux";
+// import { Navigate } from "react-router-dom";
 
 export default function Cart() {
   const [cartNumber, setCartNumber] = useState(1);
+  // const userData = useSelector((state) => state.userStore?.accessToken);
+
+  // if (!userData) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   const handleChange = (e) => {
     if (parseInt(e.target.value) < 0) {

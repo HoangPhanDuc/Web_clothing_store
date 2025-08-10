@@ -1,10 +1,8 @@
-.contain__products {
-  font-family: Arial, Helvetica, sans-serif;
-}
+.contain__products,
 .title__lastest {
   font-family: Arial, Helvetica, sans-serif;
 }
-.w__products{
+.w__products {
   box-sizing: border-box;
 }
 .contain__products {
