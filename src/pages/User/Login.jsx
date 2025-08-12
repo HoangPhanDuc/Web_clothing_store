@@ -1,22 +1,19 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
-import { auth, googleProvider } from "../../config/firebase.config";
-import { getUser } from "../../redux/slice/userSlice";
-import { togglePassword } from "../../redux/slice/passwordSlice";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config/firebase.config";
+import { getUser } from "../../redux/slice/userSlice.js";
+import { togglePassword } from "../../redux/slice/passwordSlice.js";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import "../../assets/css/login.css";
+import { signInWithGoogleAuth } from "../../services/userService";
 
 export default function Login() {
   const dispatch = useDispatch();
-  const showPass = useSelector((state) => state.passwordStore.status);
+  const showPass = useSelector((state) => state.passwordStore?.status);
   const navigate = useNavigate();
 
   const initialLogin = { email: "", password: "" };
@@ -45,7 +42,7 @@ export default function Login() {
       toast.success("Login successful!");
       navigate("/");
     } catch (error) {
-      toast.error("Login failed. Please check your credentials.");
+      toast.error("Login failed. Please check your credentials!");
       console.error(error);
     } finally {
       setSubmitting(false);
@@ -54,17 +51,8 @@ export default function Login() {
 
   const signInWithGoogle = async () => {
     try {
-      const res = await signInWithPopup(auth, googleProvider);
-      const credential = GoogleAuthProvider.credentialFromResult(res);
-      const accessToken = credential.accessToken;
-      dispatch(
-        getUser({
-          name: res.user.displayName,
-          email: res.user.email,
-          photo: res.user.photoURL,
-          accessToken,
-        })
-      );
+      const resData = await signInWithGoogleAuth();
+      dispatch(getUser(resData));
       toast.success("Google login successful!");
       navigate("/");
     } catch (error) {

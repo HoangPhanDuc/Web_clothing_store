@@ -1,8 +1,6 @@
 import React from "react";
-import { currencyUSD } from "../utils/feature.common";
 
-export default function CartItem(props) {
-
+export default function OrderItem() {
   return (
     <div className="row row-cols-2 row-cols-sm-4 mt-2 mb-2 d-flex justify-content-around text-center align-items-center">
       <div className="col img__cart d-flex align-items-center">

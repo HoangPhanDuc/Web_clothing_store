@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { data, useNavigate, useParams } from "react-router-dom";
 import { currencyUSD } from "../utils/feature.common";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../config/firebase.config";
+import { useSelector } from "react-redux";
+import { addToCartAPI } from "../services/cartService";
+import { toast } from "react-toastify";
+import { getOneProductAPI } from "../services/productService";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [oneProductsData, SetOneProductsData] = useState({});
-  const oneProductCollectionRef = doc(db, "Product", id);
+  const userId = useSelector((state) => state.userStore.id);
+  const [myCartData, setMyCartData] = useState({});
+  const navigate = useNavigate();
+  const userData = useSelector((state) => state.userStore?.accessToken);
 
   const getOneProductDetail = async () => {
     try {
-      const getOneProduct = await getDoc(oneProductCollectionRef);
-      SetOneProductsData({ id: getOneProduct.id, ...getOneProduct.data() });
+      const oneProduct = await getOneProductAPI(id);
+      SetOneProductsData(oneProduct);
     } catch (error) {
       console.log(error);
     }
@@ -20,7 +25,15 @@ export default function ProductDetail() {
 
   const addToCart = async () => {
     try {
+      if (!userData) {
+        return navigate("/login");
+      }
+      const addToCart = await addToCartAPI(oneProductsData, userId);
+      if (addToCart) {
+        toast.success("Added to cart successful!");
+      }
     } catch (error) {
+      toast.error("Added to cart failed!");
       console.log(error);
     }
   };
@@ -39,11 +52,17 @@ export default function ProductDetail() {
           <div className="h5 m-1 mt-4 mb-4 text-uppercase">
             {oneProductsData.name}
           </div>
-          <div className="h6 m-1 mt-4 mb-4">
-            {currencyUSD.format(oneProductsData.price)}
+          <div className="col h6 m-1 mt-4 mb-4">
+            Price: {currencyUSD.format(oneProductsData.price)}
+          </div>
+          <div className="m-1 mt-4 mb-4 w-100">
+            In stock: {oneProductsData.quantity}
           </div>
           <div className="m-1 mt-4 mb-4 w-100 btn__opacity">
-            <button className="w-100 p-2 border-1 border-black text-bg-dark">
+            <button
+              onClick={() => addToCart()}
+              className="w-100 p-2 border-1 border-black text-bg-dark"
+            >
               Add to cart
             </button>
           </div>

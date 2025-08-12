@@ -1,18 +1,22 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../config/firebase.config";
-import { useDispatch, useSelector } from "react-redux";
-import { clearUser } from "../redux/slice/userSlice";
+import { useSelector } from "react-redux";
 import "../assets/css/nav.css";
+import { signOut } from "firebase/auth";
+import { auth } from "../config/firebase.config.js";
 
 export default function Nav() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const userData = useSelector((state) => state.userStore?.accessToken);
+  const userData = useSelector((state) => state.userStore);
+  const cartCount = useSelector((state) => state.cartStore?.items?.length);
 
-  const handleLogout = () => {
-    dispatch(clearUser());
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -32,10 +36,20 @@ export default function Nav() {
       </li>
 
       {/* Cart */}
-      <li className="nav-item">
-        <Link className="nav-link text-uppercase" to="/cart">
+      <li className="nav-item position-relative">
+        <Link className="nav-link text-uppercase z-0" to="/cart">
           Cart
         </Link>
+        {cartCount > 0 ? (
+          <>
+            <div
+              style={{ fontSize: "12px" }}
+              className="position-absolute top-0 end-0 text-danger fw-bold z-1"
+            >
+              {cartCount}
+            </div>
+          </>
+        ) : null}
       </li>
 
       {/* Orders */}
@@ -76,13 +90,24 @@ export default function Nav() {
           style={{ cursor: "pointer" }}
           title="Account"
         >
-          <i className="fa-solid fa-user fa-lg"></i>
+          {userData.photo ? (
+            <>
+              <img
+                className="rounded-circle"
+                style={{ width: "30px", height: "30px" }}
+                src={userData.photo}
+                alt="avatar"
+              />
+            </>
+          ) : (
+            <i className="fa-solid fa-user fa-lg"></i>
+          )}
         </span>
         <ul
           className="dropdown-menu dropdown-menu-end"
           aria-labelledby="accountDropdown"
         >
-          {!userData ? (
+          {!userData.accessToken ? (
             <>
               <li>
                 <Link className="dropdown-item" to="/login">
@@ -98,7 +123,7 @@ export default function Nav() {
           ) : (
             <>
               <li>
-                <Link className="dropdown-item" to="/myprofile">
+                <Link className="dropdown-item" to="/my-profile">
                   My Profile
                 </Link>
               </li>

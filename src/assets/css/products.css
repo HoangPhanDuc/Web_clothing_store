@@ -2,8 +2,9 @@
 .title__lastest {
   font-family: Arial, Helvetica, sans-serif;
 }
-.w__products {
+.w_products {
   box-sizing: border-box;
+  min-height: 90vh;
 }
 .contain__products {
   cursor: pointer;

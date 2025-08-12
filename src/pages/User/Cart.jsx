@@ -1,17 +1,11 @@
-import { useState } from "react";
-import { currencyUSD } from "../../utils/feature.common";
+import React, { useState } from "react";
 import "../../assets/css/cart.css";
-import image from "../../assets/images/ao-so-mi-den-tron-774x1024.jpg";
-// import { useSelector } from "react-redux";
-// import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import CartItem from "../../components/CartItem";
 
 export default function Cart() {
   const [cartNumber, setCartNumber] = useState(1);
-  // const userData = useSelector((state) => state.userStore?.accessToken);
-
-  // if (!userData) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  const cartList = useSelector((state) => state.cartStore?.items);
 
   const handleChange = (e) => {
     if (parseInt(e.target.value) < 0) {
@@ -33,29 +27,28 @@ export default function Cart() {
     } else return alert("quantity no less than 0");
   };
 
+  if (loading) return <Loading />;
+  if (error) return <Error />;
+
   return (
     <div className="container w-100 mt-4 mb-4 contain__cart">
       <div className="h5 m-3 mt-4 mb-4">My cart</div>
-      <div className="row row-cols-2 row-cols-sm-4 mt-2 mb-2 d-flex justify-content-around text-center align-items-center">
-        <div className="col img__cart d-flex align-items-center">
-          <img className="img-fluid" src={image} alt="" />
-          <div className="fw-bold">T-shirt men</div>
-        </div>
-        <div className="col button__cart remove__product">
-          <i onClick={decreaseQuantity} className="fa-solid fa-minus me-1"></i>
-          <input
-            className="border border-1 border-black"
-            type="number"
-            onChange={handleChange}
-            value={cartNumber}
-          />
-          <i onClick={increaseQuantity} className="fa-solid fa-plus ms-1"></i>
-          {console.log(cartNumber)}
-        </div>
-        <div className="col">{currencyUSD.format(1234)}</div>
-        <div className="col remove__product">
-          <i class="fa-solid fa-trash"></i>
-        </div>
+      {cartList.map((cartItem, index) => (
+        <CartItem
+          key={index}
+          id={cartItem.data.id}
+          name={cartItem.data.name}
+          image={cartItem.data.image}
+          quantity={cartItem.data.quantity}
+          price={cartItem.data.price}
+          increaseQuantity={increaseQuantity}
+          decreaseQuantity={decreaseQuantity}
+          handleChange={handleChange}
+        />
+      ))}
+      <div className="">Total price: </div>
+      <div>
+        <button className="btn btn-dark">Orders</button>
       </div>
     </div>
   );

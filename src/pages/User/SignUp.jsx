@@ -1,13 +1,18 @@
-import { Link } from "react-router-dom";
-import { auth, db, googleProvider } from "../../config/firebase.config";
+import { Link, useNavigate } from "react-router-dom";
+import { auth, db } from "../../config/firebase.config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
+import { signInWithGoogleAuth } from "../../services/userService";
+import { useDispatch } from "react-redux";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const signUp = async (e) => {
     e.preventDefault();
@@ -34,9 +39,17 @@ const SignUp = () => {
     }
   };
 
-  // const signUpWithGoogle = () => {
-  //   signInWithGoogle(auth, googleProvider, setMessage);
-  // };
+  const continueWithGoogle = async () => {
+      try {
+        const resData = await signInWithGoogleAuth();
+        dispatch(getUser(resData));
+        toast.success("Google login successful!");
+        navigate("/");
+      } catch (error) {
+        toast.error("Google login failed.");
+        console.error(error);
+      }
+    };
 
   return (
     <div className="container w-100 vh-100 font-monospace">
@@ -80,7 +93,7 @@ const SignUp = () => {
         </form>
         <div className="mt-2">
           <button
-            // onClick={() => signUpWithGoogle()}
+            onClick={() => continueWithGoogle()}
             className="w-100 border-1 p-2"
           >
             Continue with Google <i class="fa-brands fa-google"></i>

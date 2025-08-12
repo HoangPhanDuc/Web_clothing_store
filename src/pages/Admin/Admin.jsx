@@ -53,7 +53,7 @@ export default function Admin() {
 
   useEffect(() => {
     getDataProduct();
-  }, []);
+  }, [product]);
 
   return (
     <div className="container-fluid">

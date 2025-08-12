@@ -1,16 +1,12 @@
 import React from "react";
 import { currencyUSD } from "../utils/feature.common";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
-export default function (props) {
+export default function Product (props) {
   const navigate = useNavigate();
-  const userData = useSelector((state) => state.userStore?.accessToken);
 
   const handleClickButton = async () => {
-    if (userData) {
-      navigate(`/product-detail/${props.id}`);
-    } else navigate("/login");
+    navigate(`/product-detail/${props.id}`);
   };
 
   return (

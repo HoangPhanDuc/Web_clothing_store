@@ -5,6 +5,7 @@ import userReducer from "./slice/userSlice";
 import storageSession from "redux-persist/lib/storage/session";
 import persistStore from "redux-persist/es/persistStore";
 import persistReducer from "redux-persist/es/persistReducer";
+import cartReducer from "./slice/cartSlice";
 
 const persistConfig = {
   key: "userStorage",
@@ -18,6 +19,7 @@ export const store = configureStore({
     passwordStore: passwordReducer,
     productStore: productReducer,
     userStore: persistedUserReducer,
+    cartStore: cartReducer,
   },
 });
 
