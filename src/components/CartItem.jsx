@@ -1,34 +1,94 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { currencyUSD } from "../utils/feature.common";
+import { useDispatch } from "react-redux";
+import {
+  decreaseQuantity,
+  increaseQuantity,
+  setQuantity,
+  updateQuantityThunk,
+} from "../redux/slice/cartSlice";
 
 export default function CartItem(props) {
+  const dispatch = useDispatch();
+  const [inputValue, setInputValue] = useState(props.quantity);
+
+  const handleBlurUpdateCart = (e) => {
+    const q = parseInt(e.target.value) || 1;
+    dispatch(updateQuantityThunk({ id: props.id, quantity: q }));
+  };
+
+  const handleIncrease = () => {
+    const newQuantity = inputValue + 1;
+    setInputValue(newQuantity);
+    dispatch(increaseQuantity(props.id));
+    dispatch(updateQuantityThunk({ id: props.id, quantity: newQuantity }));
+  };
+
+  const handleDecrease = () => {
+    if (inputValue > 1) {
+      const newQuantity = inputValue - 1;
+      setInputValue(newQuantity);
+      dispatch(decreaseQuantity(props.id));
+      dispatch(updateQuantityThunk({ id: props.id, quantity: newQuantity }));
+    }
+  };
+
+  const handleChange = (e) => {
+    const value = parseInt(e.target.value) || 1;
+    setInputValue(value);
+    dispatch(setQuantity({ id: props.id, quantity: value }));
+  };
+
+  useEffect(() => {
+    setInputValue(props.quantity);
+  }, [props.quantity]);
 
   return (
-    <div className="row row-cols-2 row-cols-sm-4 mt-2 mb-2 d-flex justify-content-around text-center align-items-center">
-      <div className="col img__cart d-flex align-items-center">
-        <img className="img-fluid" src={props.image} alt="cartItem" />
-        <div className="fw-bold">{props.name}</div>
-      </div>
-      <div className="col button__cart remove__product">
-        <i
-          onClick={() => props.decreaseQuantity()}
-          className="fa-solid fa-minus me-1"
-        ></i>
-        <input
-          className="border border-1 border-black"
-          type="number"
-          onChange={props.handleChange}
-          value={props.quantity}
-        />
-        <i
-          onClick={() => props.increaseQuantity()}
-          className="fa-solid fa-plus ms-1"
-        ></i>
-      </div>
-      <div className="col">{currencyUSD.format(props.price)}</div>
-      <div className="col remove__product">
-        <i class="fa-solid fa-trash"></i>
-      </div>
+    <div className="table-responsive mt-2 mb-2">
+      <table className="table text-center align-middle mb-0">
+        <tbody>
+          <tr>
+            <td className="d-flex align-items-center justify-content-center flex-wrap">
+              <img
+                className="img-fluid me-2 mb-1"
+                src={props.image}
+                alt="cartItem"
+                style={{ maxWidth: "50px", maxHeight: "50px" }}
+              />
+              <span className="fw-bold">{props.name}</span>
+            </td>
+            <td>
+              <i
+                onClick={handleDecrease}
+                className="fa-solid fa-minus me-2"
+                role="button"
+              ></i>
+              <input
+                className="border border-1 border-black text-center"
+                type="number"
+                value={inputValue}
+                min={1}
+                style={{ width: "60px" }}
+                onChange={handleChange}
+                onBlur={handleBlurUpdateCart}
+              />
+              <i
+                onClick={handleIncrease}
+                className="fa-solid fa-plus ms-2"
+                role="button"
+              ></i>
+            </td>
+            <td>{currencyUSD.format(props.price)}</td>
+            <td>
+              <i
+                className="fa-solid fa-trash text-danger"
+                role="button"
+                onClick={props.removeProduct}
+              ></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }

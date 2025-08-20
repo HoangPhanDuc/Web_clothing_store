@@ -1,32 +1,37 @@
 import React from "react";
+import { currencyUSD } from "../utils/feature.common";
 
-export default function OrderItem() {
+export default function OrderItem(props) {
   return (
-    <div className="row row-cols-2 row-cols-sm-4 mt-2 mb-2 d-flex justify-content-around text-center align-items-center">
-      <div className="col img__cart d-flex align-items-center">
-        <img className="img-fluid" src={props.image} alt="cartItem" />
-        <div className="fw-bold">{props.name}</div>
-      </div>
-      <div className="col button__cart remove__product">
-        <i
-          onClick={() => props.decreaseQuantity()}
-          className="fa-solid fa-minus me-1"
-        ></i>
-        <input
-          className="border border-1 border-black"
-          type="number"
-          onChange={props.handleChange}
-          value={props.quantity}
-        />
-        <i
-          onClick={() => props.increaseQuantity()}
-          className="fa-solid fa-plus ms-1"
-        ></i>
-      </div>
-      <div className="col">{currencyUSD.format(props.price)}</div>
-      <div className="col remove__product">
-        <i class="fa-solid fa-trash"></i>
-      </div>
+    <div className="table-responsive mt-2 mb-2">
+      <table className="table table-borderless text-center align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price</th>
+            <th scope="col">Order Date</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="d-flex align-items-center justify-content-center flex-wrap">
+              <img
+                src={props.image}
+                alt="cartItem"
+                className="img-fluid me-2 mb-1"
+                style={{ maxWidth: "50px", maxHeight: "50px" }}
+              />
+              <span className="fw-bold">{props.name}</span>
+            </td>
+            <td>{props.quantity}</td>
+            <td>{currencyUSD.format(props.price)}</td>
+            <td>{props.ordersAt}</td>
+            <td>{props.status}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }

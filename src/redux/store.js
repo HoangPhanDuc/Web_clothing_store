@@ -6,6 +6,7 @@ import storageSession from "redux-persist/lib/storage/session";
 import persistStore from "redux-persist/es/persistStore";
 import persistReducer from "redux-persist/es/persistReducer";
 import cartReducer from "./slice/cartSlice";
+import ordersReducer from "./slice/ordersSlice";
 
 const persistConfig = {
   key: "userStorage",
@@ -20,7 +21,14 @@ export const store = configureStore({
     productStore: productReducer,
     userStore: persistedUserReducer,
     cartStore: cartReducer,
+    ordersStore: ordersReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+      },
+    }),
 });
 
 export const persistor = persistStore(store);
