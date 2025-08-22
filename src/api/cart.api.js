@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -30,6 +31,7 @@ export const getCartAPI = async (userId) => {
   const refCart = collection(db, "Cart");
   const q = query(refCart, where("userId", "==", userId));
   const cartsSnapshot = await getDocs(q);
+
   if (cartsSnapshot.empty) return [];
   const cartsWithProducts = await Promise.all(
     cartsSnapshot.docs.map(async (cartDoc) => {
@@ -44,12 +46,14 @@ export const getCartAPI = async (userId) => {
       };
     })
   );
+
   return cartsWithProducts;
 };
 
 export const checkoutAPI = async (orderData) => {
   await runTransaction(db, async (transaction) => {
     const productSnaps = {};
+    
     for (const item of orderData.items) {
       const productRef = doc(db, "Product", item.productId);
       const productSnap = await transaction.get(productRef);
@@ -101,4 +105,10 @@ export const updateCartItem = async (id, quantity) => {
   const cartItemRef = doc(db, "Cart", id);
   await updateDoc(cartItemRef, { quantity: quantity });
   return { id, quantity };
+};
+
+export const deleteCartById = async (id) => {
+  const cartRef = doc(db, "Cart", id);
+  await deleteDoc(cartRef);
+  return true;
 };

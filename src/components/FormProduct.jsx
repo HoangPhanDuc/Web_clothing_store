@@ -1,54 +1,20 @@
-import React, { useState } from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { setDoc, doc, collection } from "firebase/firestore";
-import { db, imageDB } from "../config/firebase.config";
+import { useState } from "react";
 import { toast } from "react-toastify";
+import * as Yup from "yup";
 
-export default function FormProduct({ onClose, refreshData }) {
+export default function FormProduct({ onClose, onSubmit, initialData = null }) {
   const [image, setImage] = useState(null);
-  const [previewImage, setPreviewImage] = useState(null);
-  const dataProduct = collection(db, "Product");
+  const [previewImage, setPreviewImage] = useState(initialData?.image || null);
 
-  const handleAddProduct = async (values, resetForm) => {
-    if (!image) {
-      toast.warn("Please select an image.");
-      return;
-    }
-
-    try {
-      const imagePath = `images/${image.name}`;
-      const imageRef = ref(imageDB, imagePath);
-      await uploadBytes(imageRef, image);
-      const imageURL = await getDownloadURL(imageRef);
-
-      const dataWithImage = {
-        ...values,
-        image: imageURL,
-        imagePath: imagePath,
-      };
-
-      await setDoc(doc(dataProduct), dataWithImage);
-      toast.success("Product added successfully.");
-      resetForm();
-      setImage(null);
-      setPreviewImage(null);
-      refreshData();
-      onClose();
-    } catch (error) {
-      toast.error("Failed to add product. Please try again.");
-    }
-  };
-
-  // Formik
   const formik = useFormik({
     initialValues: {
-      name: "",
-      price: "",
-      quantity: "",
-      decription: "",
+      name: initialData?.name || "",
+      price: initialData?.price || "",
+      quantity: initialData?.quantity || "",
+      decription: initialData?.decription || "",
     },
+    enableReinitialize: true,
     validationSchema: Yup.object({
       name: Yup.string().required("Product name is required."),
       price: Yup.number()
@@ -62,7 +28,14 @@ export default function FormProduct({ onClose, refreshData }) {
       decription: Yup.string().required("Description is required."),
     }),
     onSubmit: async (values, { resetForm }) => {
-      await handleAddProduct(values, resetForm);
+      try {
+        await onSubmit(values, image, resetForm);
+        setImage(null);
+        setPreviewImage(null);
+        onClose();
+      } catch (error) {
+        toast.error("Something went wrong!");
+      }
     },
   });
 
@@ -71,8 +44,13 @@ export default function FormProduct({ onClose, refreshData }) {
       className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center"
       style={{ zIndex: 1050 }}
     >
-      <div className="bg-white p-4 rounded shadow" style={{ width: "400px" }}>
-        <h5 className="text-center mb-3">Add Product</h5>
+      <div
+        className="bg-white p-3 pt-2 pb-2 rounded shadow"
+        style={{ width: "400px" }}
+      >
+        <h5 className="text-center mb-2">
+          {initialData ? "Update Product" : "Add Product"}
+        </h5>
         <form onSubmit={formik.handleSubmit}>
           {["name", "price", "quantity", "decription"].map((field) => (
             <div className="mb-2" key={field}>
@@ -99,7 +77,7 @@ export default function FormProduct({ onClose, refreshData }) {
             </div>
           ))}
 
-          <div className="mb-3">
+          <div className="mb-2">
             <label className="form-label">Image</label>
             <input
               type="file"
@@ -116,12 +94,12 @@ export default function FormProduct({ onClose, refreshData }) {
           </div>
 
           {previewImage && (
-            <div className="text-center mb-3">
+            <div className="text-center mb-2">
               <img
                 src={previewImage}
                 alt="Preview"
                 className="img-fluid"
-                style={{ maxHeight: "90px", objectFit: "contain" }}
+                style={{ maxHeight: "50px", objectFit: "contain" }}
               />
             </div>
           )}
@@ -139,7 +117,7 @@ export default function FormProduct({ onClose, refreshData }) {
               Cancel
             </button>
             <button type="submit" className="btn btn-success">
-              Add
+              {initialData ? "Update" : "Add"}
             </button>
           </div>
         </form>

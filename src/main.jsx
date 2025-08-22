@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-// import './index.css'
+import './index.css'
 import App from "./App.jsx";
 
 // aos css
@@ -10,7 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap Bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "./index.css";
-// Toast ccss
+// Toast css
 import "react-toastify/dist/ReactToastify.css";
 // Fortawesome
 import "@fortawesome/fontawesome-free/css/all.min.css";

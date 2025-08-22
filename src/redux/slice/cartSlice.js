@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getCartAPI, updateCartItem } from "../../services/cartService";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import { deleteCartById, getCartAPI, updateCartItem } from "../../api/cart.api";
 
 export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
@@ -24,12 +24,26 @@ export const updateQuantityThunk = createAsyncThunk(
   }
 );
 
+export const deleteCartThunk = createAsyncThunk(
+  "cart/deleteCart",
+  async (id, { rejectWithValue }) => {
+    try {
+      await deleteCartById(id);
+      return id;
+    } catch (error) {
+      toast.error("Delete failed!");
+      return rejectWithValue(error);
+    }
+  }
+);
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: { items: [], loading: false },
   reducers: {
     clearCart: (state) => {
       state.items = [];
+      state.loading = false;
     },
     increaseQuantity: (state, action) => {
       const item = state.items.find((i) => i.id === action.payload);
@@ -59,11 +73,11 @@ const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCart.pending, (state) => {
-        state.loading = false;
+        state.loading = true;
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.items = action.payload;
-        state.loading = true;
+        state.loading = false;
       })
       .addCase(fetchCart.rejected, (state) => {
         state.loading = false;
@@ -75,8 +89,19 @@ const cartSlice = createSlice({
           toast.success("Updated cart successfully!");
         }
       })
-      .addCase(updateQuantityThunk.rejected, (state, action) => {
+      .addCase(updateQuantityThunk.rejected, () => {
         toast.error("Updated cart failed!");
+      })
+      .addCase(deleteCartThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteCartThunk.fulfilled, (state, action) => {
+        state.items = state.items.filter((item) => item.id !== action.payload);
+        state.loading = false;
+        toast.success("Item deleted!");
+      })
+      .addCase(deleteCartThunk.rejected, (state) => {
+        state.loading = false;
       });
   },
 });

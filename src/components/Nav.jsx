@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import "../assets/css/nav.css";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase.config.js";
+import { toast } from "react-toastify";
 
 export default function Nav() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function Nav() {
       await signOut(auth);
       navigate("/login");
     } catch (error) {
-      console.log(error);
+      toast.error("Error something!");
     }
   };
 

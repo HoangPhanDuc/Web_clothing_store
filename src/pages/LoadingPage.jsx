@@ -1,6 +1,4 @@
-import React from "react";
-
-export default function Loading() {
+export default function LoadingPage() {
   return (
     <div
       style={{ height: "90vh" }}

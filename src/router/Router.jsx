@@ -1,20 +1,19 @@
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import Admin from "../pages/Admin/Admin";
+import LoadingPage from "../pages/LoadingPage";
+import NotFound from "../pages/NotFound";
 import Home from "../pages/User/Home";
 import Login from "../pages/User/Login";
+import MyProfile from "../pages/User/MyProfile";
+import Order from "../pages/User/Order";
+import Product from "../pages/User/Product";
+import ProductDetail from "../pages/User/ProductDetail";
 import SignUp from "../pages/User/SignUp";
-// import Cart from "../pages/User/Cart";
-import ProductDetail from "../components/ProductDetail";
-import Admin from "../pages/Admin/Admin";
-import ProtectedLayout from "./ProtectedLayout";
 import AuthLayout from "./AuthLayout";
 import MainLayout from "./MainLayout";
-import NotFound from "../pages/NotFound";
-import Order from "../pages/User/Order";
-import MyProfile from "../pages/User/MyProfile";
-import Product from "../pages/User/Product";
-import Loading from "../components/Loading";
+import ProtectedLayout from "./ProtectedLayout";
 const Cart = lazy(() => import("../pages/User/Cart"));
 
 export default function Router() {
@@ -36,12 +35,19 @@ export default function Router() {
             <Route
               path="/cart"
               element={
-                <Suspense fallback={<Loading />}>
+                <Suspense fallback={<LoadingPage />}>
                   <Cart />
                 </Suspense>
               }
             />
-            <Route path="/orders" element={<Order />} />
+            <Route
+              path="/orders"
+              element={
+                <Suspense fallback={<LoadingPage />}>
+                  <Order />
+                </Suspense>
+              }
+            />
           </Route>
         </Route>
 

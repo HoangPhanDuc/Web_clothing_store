@@ -1,15 +1,14 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../config/firebase.config";
-import { getUser } from "../../redux/slice/userSlice.js";
-import { togglePassword } from "../../redux/slice/passwordSlice.js";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import * as Yup from "yup";
+import { signInWithGoogleAuth } from "../../api/user.api.js";
 import "../../assets/css/login.css";
-import { signInWithGoogleAuth } from "../../services/userService";
+import { auth } from "../../config/firebase.config";
+import { togglePassword } from "../../redux/slice/passwordSlice.js";
+import { getUser } from "../../redux/slice/userSlice.js";
 
 export default function Login() {
   const dispatch = useDispatch();

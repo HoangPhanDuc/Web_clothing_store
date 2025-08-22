@@ -20,9 +20,11 @@ export const getOrdersAPI = async (userId) => {
         order.items.map(async (item) => {
           const productRef = doc(db, "Product", item.productId);
           const productSnap = await getDoc(productRef);
+
           if (!productSnap.exists()) {
             return null;
           }
+
           const data = productSnap.data();
           return {
             ...item,

@@ -1,20 +1,12 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Aos from "aos";
-import "aos/dist/aos.css";
+import imgRight from "../../assets/images/pritika-swarup-wearing-a-brown-blusa-white-shoes-and-black-news-photo-1672741251.jpg";
+import imgLeft from "../../assets/images/winter_clothes_google_ppt_templates_676232.jpg";
+import image from "../../assets/images/z4565776997543_f3cf877e67bd209a09c33499be8247d6.jpg";
 import Products from "../../components/Products";
 import PRSection from "../../components/PRSection";
-import image from "../../assets/images/z4565776997543_f3cf877e67bd209a09c33499be8247d6.jpg";
-import imgLeft from "../../assets/images/winter_clothes_google_ppt_templates_676232.jpg";
-import imgRight from "../../assets/images/pritika-swarup-wearing-a-brown-blusa-white-shoes-and-black-news-photo-1672741251.jpg";
 
 export default function Home() {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    Aos.init({ duration: 1500 });
-    Aos.refresh();
-  }, []);
 
   return (
     <div className="container-fluid p-0">
@@ -61,8 +53,13 @@ export default function Home() {
       </div>
 
       {/* Product list */}
-      <div>
-        <Products />
+      <div className="mt-4 mb-4">
+        <div className="h4 ms-2 ms-sm-5" data-aos="zoom-in-right">
+          New products
+        </div>
+        <div data-aos="fade-down-right">
+          <Products />
+        </div>
       </div>
     </div>
   );

@@ -1,67 +1,54 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  getDoc,
-} from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import { db, imageDB } from "../../config/firebase.config";
-import { ref, deleteObject } from "firebase/storage";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import {
+  addProductAdminAPI,
+  deleteProductAdminAPI,
+  fetchProductsAPI,
+  updateProductAdminAPI,
+} from "../../api/product.api";
 import FormProduct from "../../components/FormProduct";
+import { currencyUSD } from "../../utils/feature.common";
 
 export default function Admin() {
-  const dataProduct = collection(db, "Product");
-  const [product, setProduct] = useState([]);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const getDataProduct = async () => {
     try {
-      const data = await getDocs(dataProduct);
-      const dataDoc = data.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setProduct(dataDoc);
+      const data = await fetchProductsAPI();
+      setProducts(data);
     } catch (error) {
-      toast.error("Lỗi khi tải dữ liệu!");
+      toast.error("Error when loading data!");
     }
   };
 
   const deleteProductData = async (id) => {
     try {
-      const docRef = doc(db, "Product", id);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data.imagePath) {
-          const imageRef = ref(imageDB, data.imagePath);
-          await deleteObject(imageRef);
-        }
-        await deleteDoc(docRef);
-        toast.success("Đã xoá sản phẩm");
-        getDataProduct();
-      } else {
-        toast.warn("Sản phẩm không tồn tại");
+      const deleted = await deleteProductAdminAPI(id);
+      if (deleted) {
+        toast.success("Deleted product seccessfully!");
+        setProducts((prev) => prev.filter((p) => p.id !== id));
       }
     } catch (error) {
-      toast.error("Lỗi khi xoá sản phẩm!");
+      toast.error("Error deleted product!");
     }
   };
 
   useEffect(() => {
     getDataProduct();
-  }, [product]);
+  }, []);
 
   return (
     <div className="container-fluid">
-      <div className="h3 text-center mt-2 mb-3">Manage Products</div>
+      <div className="h3 text-center mt-3 mb-2">Admin</div>
       <div className="text-end mb-3">
         <button
           className="btn btn-success"
-          onClick={() => setShowAddForm(true)}
+          onClick={() => {
+            setSelectedProduct(null);
+            setShowForm(true);
+          }}
         >
           + Add Product
         </button>
@@ -70,21 +57,39 @@ export default function Admin() {
       <div className="row">
         <div className="col-12">
           <div className="table-responsive">
-            <table className="table table-bordered">
+            <table className="table table-bordered flex-wrap">
               <thead className="table-light">
                 <tr>
                   <th>Name</th>
                   <th>Quantity</th>
+                  <th>Price</th>
                   <th>Feature</th>
                 </tr>
               </thead>
               <tbody>
-                {product.map((item) => (
+                {products.map((item) => (
                   <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>{item.quantity}</td>
-                    <td>
-                      <button className="btn btn-primary btn-sm me-1">
+                    <td className="d-flex align-items-center">
+                      <img
+                        className="img-fluid"
+                        src={item.image}
+                        alt="image"
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                      <div className="ms-3">{item.name}</div>
+                    </td>
+                    <td className="align-middle">{item.quantity}</td>
+                    <td className="align-middle">
+                      {currencyUSD.format(item.price)}
+                    </td>
+                    <td className="align-middle">
+                      <button
+                        className="btn btn-primary btn-sm me-1"
+                        onClick={() => {
+                          setSelectedProduct(item);
+                          setShowForm(true);
+                        }}
+                      >
                         Update
                       </button>
                       <button
@@ -102,11 +107,39 @@ export default function Admin() {
         </div>
       </div>
 
-      {/* Modal Add Product */}
-      {showAddForm && (
+      {/* Modal Add / Update Product */}
+      {showForm && (
         <FormProduct
-          onClose={() => setShowAddForm(false)}
-          refreshData={getDataProduct}
+          onClose={() => setShowForm(false)}
+          initialData={selectedProduct}
+          onSubmit={async (values, image, resetForm) => {
+            try {
+              if (selectedProduct) {
+                const updated = await updateProductAdminAPI(
+                  selectedProduct.id,
+                  values,
+                  image
+                );
+                toast.success("Product updated!");
+                setProducts((prev) =>
+                  prev.map((p) =>
+                    p.id === selectedProduct.id
+                      ? { ...p, ...values, image: updated.image || p.image }
+                      : p
+                  )
+                );
+              } else {
+                const added = await addProductAdminAPI(values, image);
+                toast.success("Product added!");
+                setProducts((prev) => [...prev, added]);
+              }
+              resetForm();
+              setShowForm(false);
+              getDataProduct();
+            } catch (error) {
+              toast.error("Error something!");
+            }
+          }}
         />
       )}
     </div>

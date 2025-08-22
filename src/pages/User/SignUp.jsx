@@ -4,8 +4,8 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { signInWithGoogleAuth } from "../../services/userService";
 import { useDispatch } from "react-redux";
+import { signInWithGoogleAuth } from "../../api/user.api";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");

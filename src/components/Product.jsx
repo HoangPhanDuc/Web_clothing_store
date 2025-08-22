@@ -1,6 +1,5 @@
-import React from "react";
-import { currencyUSD } from "../utils/feature.common";
 import { useNavigate } from "react-router-dom";
+import { currencyUSD } from "../utils/feature.common";
 
 export default function Product (props) {
   const navigate = useNavigate();
