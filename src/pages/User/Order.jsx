@@ -7,7 +7,15 @@ export default function Order() {
   const ordersList = useSelector((state) => state.ordersStore?.ordersItems);
   const loading = useSelector((state) => state.ordersStore?.loading);
 
-  if (loading === false) return <LoadingComponent />;
+  if (loading === true) return <LoadingComponent />;
+  if (!loading && ordersList.lenght === 0) {
+    <div
+      className="d-flex justify-content-center align-items-center"
+      style={{ minHeight: "90vh" }}
+    >
+      <span className="h3">No items in orders</span>
+    </div>;
+  }
 
   return (
     <div style={{ minHeight: "90vh" }}>

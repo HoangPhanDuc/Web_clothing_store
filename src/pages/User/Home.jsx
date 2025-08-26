@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import imgRight from "../../assets/images/pritika-swarup-wearing-a-brown-blusa-white-shoes-and-black-news-photo-1672741251.jpg";
 import imgLeft from "../../assets/images/winter_clothes_google_ppt_templates_676232.jpg";
 import image from "../../assets/images/z4565776997543_f3cf877e67bd209a09c33499be8247d6.jpg";
-import Products from "../../components/Products";
+import ProductsContainer from "../../components/ProductContainer";
 import PRSection from "../../components/PRSection";
 
 export default function Home() {
@@ -58,7 +58,7 @@ export default function Home() {
           New products
         </div>
         <div data-aos="fade-down-right">
-          <Products />
+          <ProductsContainer />
         </div>
       </div>
     </div>

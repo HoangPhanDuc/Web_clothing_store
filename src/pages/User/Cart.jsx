@@ -39,7 +39,7 @@ export default function Cart() {
   }, [cartList]);
 
   if (loading === true) return <LoadingComponent />;
-  if (cartList.length === 0)
+  if (!loading && cartList.length === 0)
     return (
       <div
         className="d-flex justify-content-center align-items-center"

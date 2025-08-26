@@ -15,31 +15,44 @@ export const fetchProducts = createAsyncThunk(
 const productSlice = createSlice({
   name: "productsList",
   initialState: {
+    allProducts: [],
     list: [],
     loading: false,
-    error: null,
   },
   reducers: {
     clearProductsList: (state) => {
       state.list = [];
+      state.allProducts = [];
+    },
+    filterProduct: (state, action) => {
+      const keyword = String(action.payload || "")
+        .toLowerCase()
+        .trim();
+      if (!keyword) {
+        state.list = state.allProducts;
+      } else {
+        const filtered = state.allProducts.filter((item) =>
+          item.name.toLowerCase().includes(keyword)
+        );
+        state.list = filtered;
+      }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
+        state.allProducts = action.payload;
         state.list = action.payload;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.loading = true;
       });
   },
 });
 
-export const { setProductsList, clearProductsList } = productSlice.actions;
+export const { clearProductsList, filterProduct } = productSlice.actions;
 export default productSlice.reducer;

@@ -1,15 +1,18 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import "../assets/css/nav.css";
 import { signOut } from "firebase/auth";
-import { auth } from "../config/firebase.config.js";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import "../assets/css/nav.css";
+import { auth } from "../config/firebase.config.js";
+import { filterProduct } from "../redux/slice/productsSlice.js";
+import { useEffect, useState } from "react";
 
 export default function Nav() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const userData = useSelector((state) => state.userStore);
   const cartCount = useSelector((state) => state.cartStore?.items?.length);
+  const [searchData, setSearchData] = useState("");
 
   const handleLogout = async () => {
     try {
@@ -19,6 +22,10 @@ export default function Nav() {
       toast.error("Error something!");
     }
   };
+
+  useEffect(() => {
+    dispatch(filterProduct(searchData));
+  }, [searchData, dispatch]);
 
   return (
     <ul className="navbar-nav ms-auto align-items-center">
@@ -62,22 +69,15 @@ export default function Nav() {
 
       {/* Search bar */}
       <li className="nav-item mx-2">
-        <form
-          className="d-flex"
-          role="search"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <input
-            className="form-control form-control-sm me-2 input-search"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-            style={{ maxWidth: "250px", minWidth: "200px" }}
-          />
-          <button className="btn btn-outline-dark btn-sm" type="submit">
-            Search
-          </button>
-        </form>
+        <input
+          className="form-control form-control-sm me-2 input-search"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+          value={searchData}
+          style={{ maxWidth: "250px", minWidth: "200px" }}
+          onChange={(e) => setSearchData(e.target.value)}
+        />
       </li>
 
       {/* Account dropdown */}

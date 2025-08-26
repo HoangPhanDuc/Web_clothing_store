@@ -1,117 +1,147 @@
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, db } from "../../config/firebase.config";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
-import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { signInWithGoogleAuth } from "../../api/user.api";
+import * as Yup from "yup";
+import {
+  createAccountByEmailAndPassAPI,
+  signInWithGoogleAuth,
+} from "../../api/user.api.js";
+import "../../assets/css/login-sign-up.css";
+import { togglePassword } from "../../redux/slice/passwordSlice.js";
+import { getUser } from "../../redux/slice/userSlice.js";
 
-const SignUp = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const navigate = useNavigate();
+export default function SignUp() {
   const dispatch = useDispatch();
+  const showPass = useSelector((state) => state.passwordStore?.status);
+  const navigate = useNavigate();
 
-  const signUp = async (e) => {
-    e.preventDefault();
+  const initialValues = { email: "", password: "" };
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email("Invalid email").required("Required"),
+    password: Yup.string().min(6, "At least 6 characters").required("Required"),
+  });
+
+  const handleSignUp = async (values, { setSubmitting }) => {
     try {
-      if (!email || !password) {
-        setMessage("You must enter your email and password!");
-      }
-      if (email && password.length < 6) {
-        setMessage("Password is not less then 6 character!");
-      } else {
-        const userInfo = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-        const user = userInfo.user;
-        await setDoc(doc(db, "Roles", user.uid), {
-          role: "user",
-        });
-        setMessage("Sign in successful!");
+      const userInfo = await createAccountByEmailAndPassAPI(
+        values.email,
+        values.password
+      );
+      if (userInfo) {
+        toast.success("Sign up successful!");
+        navigate("/login");
       }
     } catch (error) {
+      toast.error("Sign up failed. Please try again!");
+      console.log(error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      const resData = await signInWithGoogleAuth();
+      dispatch(getUser(resData));
+      toast.success("Google login successful!");
+      navigate("/");
+    } catch (error) {
+      toast.error("Google login failed.");
       console.error(error);
     }
   };
 
-  const continueWithGoogle = async () => {
-      try {
-        const resData = await signInWithGoogleAuth();
-        dispatch(getUser(resData));
-        toast.success("Google login successful!");
-        navigate("/");
-      } catch (error) {
-        toast.error("Google login failed.");
-        console.error(error);
-      }
-    };
-
   return (
-    <div className="container w-100 vh-100 font-monospace">
-      <div className="position-absolute bg-light top-50 start-50 translate-middle shadow p-4">
-        <form onSubmit={signUp}>
-          <div className="h2 text-center mt-2 mb-4">Sign up</div>
-          <div className="m-3 d-md-flex justify-content-between">
-            <label className="me-1" htmlFor="email">
-              Email
-            </label>
-            <div className="box-input">
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                type="text"
-                name="email"
-                id="email"
-              />
-            </div>
-          </div>
-          <div className="m-3 d-md-flex justify-content-between">
-            <label className="me-1" htmlFor="password">
-              Password
-            </label>
-            <div className="box-input">
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                name="password"
-                id="password"
-              />
-            </div>
-          </div>
-          <div className="w-100 p-0 m-0 mt-5 mt-md-4 text-center btn__opacity">
-            <button
-              type="submit"
-              className="w-100 border-1 border-black text-bg-dark text-white p-2"
-            >
-              Sign up
-            </button>
-          </div>
-        </form>
-        <div className="mt-2">
+    <div className="container d-flex align-items-center justify-content-center vh-100">
+      <div
+        className="login-box bg-white p-4 rounded shadow"
+        style={{ minWidth: 352 }}
+      >
+        <h2 className="text-center mb-4">Sign Up</h2>
+
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSignUp}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label fw-semibold">
+                  Email
+                </label>
+                <Field
+                  name="email"
+                  type="email"
+                  className="form-control"
+                  placeholder="Enter email"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-danger small mt-1"
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label fw-semibold">
+                  Password
+                </label>
+                <div className="input-group">
+                  <Field
+                    name="password"
+                    type={showPass ? "text" : "password"}
+                    className="form-control"
+                    placeholder="Enter password"
+                  />
+                  <span
+                    className="input-group-text"
+                    onClick={() => dispatch(togglePassword())}
+                  >
+                    <i
+                      className={`fa-regular ${
+                        showPass ? "fa-eye" : "fa-eye-slash"
+                      }`}
+                    ></i>
+                  </span>
+                </div>
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="text-danger small mt-1"
+                />
+              </div>
+
+              <div className="d-grid mb-3">
+                <button
+                  type="submit"
+                  className="btn btn-dark"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Signing up..." : "Sign Up"}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+
+        <div className="d-grid mb-3">
           <button
-            onClick={() => continueWithGoogle()}
-            className="w-100 border-1 p-2"
+            onClick={signInWithGoogle}
+            className="btn btn-outline-secondary"
           >
-            Continue with Google <i class="fa-brands fa-google"></i>
+            <i className="fa-brands fa-google me-2"></i> Continue with Google
           </button>
         </div>
-        <div className="w-100 m-0 mt-2 mb-2 text-center btn__opacity">
-          <Link to="/login">
-            <button className="w-100 border-1 border-black text-bg-dark text-white p-2">
-              Login
-            </button>
+
+        <div className="text-center mb-2">
+          <Link to="/login" className="btn btn-sm btn-outline-dark w-100">
+            Already have an account? Login
           </Link>
-        </div>
-        <div className="position-relative" style={{ fontSize: "10px" }}>
-          <span className="position-absolute">{message && <p>{message}</p>}</span>
         </div>
       </div>
     </div>
   );
-};
-
-export default SignUp;
+}

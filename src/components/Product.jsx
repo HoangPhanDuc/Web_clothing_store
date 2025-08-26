@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { currencyUSD } from "../utils/feature.common";
+import "../assets/css/product.css";
 
-export default function Product (props) {
+export default function Product(props) {
   const navigate = useNavigate();
 
   const handleClickButton = async () => {

@@ -23,8 +23,8 @@ export default function App() {
         dispatch(fetchCart(user.uid));
         dispatch(fetchOrders(user.uid));
       } else {
-        dispatch(clearUser());
         dispatch(clearCart());
+        dispatch(clearUser());
       }
     });
 

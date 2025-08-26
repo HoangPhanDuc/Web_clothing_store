@@ -1,12 +1,13 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import { signInWithGoogleAuth } from "../../api/user.api.js";
-import "../../assets/css/login.css";
-import { auth } from "../../config/firebase.config";
+import {
+  signInEmailAndPassAPI,
+  signInWithGoogleAuth,
+} from "../../api/user.api.js";
+import "../../assets/css/login-sign-up.css";
 import { togglePassword } from "../../redux/slice/passwordSlice.js";
 import { getUser } from "../../redux/slice/userSlice.js";
 
@@ -24,11 +25,7 @@ export default function Login() {
 
   const handleLogin = async (values, { setSubmitting }) => {
     try {
-      const res = await signInWithEmailAndPassword(
-        auth,
-        values.email,
-        values.password
-      );
+      const res = await signInEmailAndPassAPI(values.email, values.password);
       const accessToken = await res.user.getIdToken();
       dispatch(
         getUser({
@@ -42,7 +39,6 @@ export default function Login() {
       navigate("/");
     } catch (error) {
       toast.error("Login failed. Please check your credentials!");
-      console.error(error);
     } finally {
       setSubmitting(false);
     }
@@ -56,7 +52,6 @@ export default function Login() {
       navigate("/");
     } catch (error) {
       toast.error("Google login failed.");
-      console.error(error);
     }
   };
 
